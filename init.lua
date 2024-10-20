@@ -264,7 +264,8 @@ require('lazy').setup({
       -- add any opts here
     },
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
-    build = 'pwsh -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false', -- for windows
+    -- build = 'pwsh -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false', -- for windows
+    build = (vim.fn.has 'linux' == 1 and { 'make' } or { 'pwsh -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false' }),
     dependencies = {
       'nvim-treesitter/nvim-treesitter',
       'stevearc/dressing.nvim',
@@ -641,7 +642,7 @@ require('lazy').setup({
       }
       require('lspconfig').zls.setup {
 
-        cmd = { 'C:/Users/adil/.zvm/bin/zls.exe' },
+        cmd = { 'zls' },
       }
       -- Brief aside: **What is LSP?**
       --
