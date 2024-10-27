@@ -244,18 +244,6 @@ require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
   {
-    'OXY2DEV/markview.nvim',
-    ft = 'markdown',
-
-    dependencies = {
-      -- You may not need this if you don't lazy load
-      -- Or if the parsers are in your $RUNTIMEPATH
-      'nvim-treesitter/nvim-treesitter',
-
-      'nvim-tree/nvim-web-devicons',
-    },
-  },
-  {
     'yetone/avante.nvim',
     event = 'VeryLazy',
     lazy = false,
@@ -640,9 +628,21 @@ require('lazy').setup({
         filetypes = { 'python' },
         cmd = { 'pylsp' },
       }
-      require('lspconfig').zls.setup {
+      -- Function to check Zig version
+      local function check_zig_version()
+        local handle = io.popen 'zig version'
+        if handle then
+          local result = handle:read '*a'
+          handle:close()
+          return result:match '(%d+%.%d+%.%d+)'
+        end
+        return nil
+      end
 
-        cmd = { 'zls' },
+      -- Setup zls based on Zig version
+      local zig_version = check_zig_version()
+      require('lspconfig').zls.setup {
+        cmd = (zig_version and zig_version ~= '0.13.0') and { 'zls' } or nil,
       }
       -- Brief aside: **What is LSP?**
       --
