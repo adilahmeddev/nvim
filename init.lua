@@ -629,21 +629,6 @@ require('lazy').setup({
         cmd = { 'pylsp' },
       }
       -- Function to check Zig version
-      local function check_zig_version()
-        local handle = io.popen 'zig version'
-        if handle then
-          local result = handle:read '*a'
-          handle:close()
-          return result:match '(%d+%.%d+%.%d+)'
-        end
-        return nil
-      end
-
-      -- Setup zls based on Zig version
-      local zig_version = check_zig_version()
-      require('lspconfig').zls.setup {
-        cmd = (zig_version and zig_version ~= '0.13.0') and { 'zls' } or nil,
-      }
       -- Brief aside: **What is LSP?**
       --
       -- LSP is an initialism you've probably heard, but might not understand what it is.
@@ -780,6 +765,18 @@ require('lazy').setup({
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+      local function check_zig_version()
+        local result = vim.fn.system 'zig version'
+        if vim.api.nvim_get_vvar 'shell_error' ~= 0 then
+          print 'failed to get local zig version, defaulting to zls 0.13.0'
+          return nil
+        else
+          local ver = result:match '(%d+%.%d+%.%d+)'
+          return ver
+        end
+      end
+
+      local zig_version = check_zig_version()
       local servers = {
         -- clangd = {},
         gopls = {},
@@ -802,6 +799,9 @@ require('lazy').setup({
           filetypes = { 'javascript', 'typescript' },
         },
 
+        zls = {
+          cmd = (zig_version and zig_version ~= '0.13.0') and { 'zls' } or nil,
+        },
         lua_ls = {
           -- cmd = {...},
           -- filetypes = { ...},
