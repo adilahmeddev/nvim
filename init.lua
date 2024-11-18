@@ -253,7 +253,9 @@ require('lazy').setup({
     },
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
     -- build = 'pwsh -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false', -- for windows
-    build = (vim.fn.has 'linux' == 1 and { 'make' } or { 'pwsh -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false' }),
+    build = ((vim.fn.has 'linux' == 1 or vim.uv.os_uname().sysname == 'Darwin') and { 'make' } or {
+      'pwsh -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false',
+    }),
     dependencies = {
       'nvim-treesitter/nvim-treesitter',
       'stevearc/dressing.nvim',
