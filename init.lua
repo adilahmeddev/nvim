@@ -220,6 +220,7 @@ end
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
+print(lazypath)
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
   local out = vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
@@ -249,6 +250,12 @@ require('lazy').setup({
     lazy = false,
     version = false, -- set this if you want to always pull the latest change
     opts = {
+
+      openai = {
+        endpoint = 'http://172.24.128.1:3399/v1',
+        model = 'qwen2.5-coder-7b-instruct',
+      },
+
       -- add any opts here
     },
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
@@ -574,7 +581,6 @@ require('lazy').setup({
         close_if_last_window = true,
         hijack_netrw_behavior = 'open_current',
         event_handlers = {
-
           {
             event = 'file_opened',
             handler = function(file_path)
@@ -591,7 +597,7 @@ require('lazy').setup({
       'nvim-lua/plenary.nvim',
       'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
       'MunifTanjim/nui.nvim',
-      -- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
+      -- '3rd/image.nvim', -- Optional image support in preview window: See `# Preview Mode` for more information
     },
   },
 
@@ -626,10 +632,6 @@ require('lazy').setup({
       'hrsh7th/cmp-nvim-lsp',
     },
     config = function()
-      require('lspconfig').pylsp.setup {
-        filetypes = { 'python' },
-        cmd = { 'pylsp' },
-      }
       -- Function to check Zig version
       -- Brief aside: **What is LSP?**
       --
@@ -781,7 +783,7 @@ require('lazy').setup({
       local zig_version = check_zig_version()
       local servers = {
         -- clangd = {},
-        gopls = {},
+        -- gopls = {},
         -- pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
@@ -791,16 +793,6 @@ require('lazy').setup({
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         --
-        ts_ls = {
-          root_dir = require('lspconfig').util.root_pattern 'package.json',
-          single_file_support = false,
-        },
-        denols = {
-          root_dir = require('lspconfig').util.root_pattern('deno.json', 'deno.jsonc'),
-          cmd = { 'deno', 'lsp' },
-          filetypes = { 'javascript', 'typescript' },
-        },
-
         zls = {
           cmd = (zig_version and zig_version ~= '0.13.0') and { 'zls' } or nil,
         },
@@ -1075,6 +1067,9 @@ require('lazy').setup({
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    config = function(self, opts)
+      require('nvim-treesitter.install').compilers = { 'zig' }
+    end,
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
@@ -1112,7 +1107,6 @@ require('lazy').setup({
   require 'kickstart.plugins.indent_line',
   require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
-  require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
@@ -1142,6 +1136,7 @@ require('lazy').setup({
     },
   },
 })
+print(lazypath)
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
