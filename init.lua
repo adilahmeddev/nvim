@@ -759,9 +759,13 @@ require('lazy').setup({
 
       local zig_version = check_zig_version()
       local servers = {
-        -- clangd = {},
-        -- gopls = {},
-        pylsp = {},
+        clangd = {
+          init_options = {
+            compilationDatabasePath = './build',
+          },
+        },
+        gopls = {},
+        -- pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -778,6 +782,7 @@ require('lazy').setup({
           -- filetypes = { ...},
           -- capabilities = {},
           settings = {
+
             Lua = {
               runtime = {
                 version = 'LuaJIT',
