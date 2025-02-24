@@ -293,6 +293,23 @@ require('lazy').setup({
     end,
   },
   {
+    'codethread/qmk.nvim',
+    config = function()
+      ---@type qmk.UserConfig
+      local conf = {
+        name = 'LAYOUT_preonic_grid',
+        layout = {
+          'x _ x x x x x x x x x x x xx^ x',
+          '^xx _ x x x x x x x x x x x x x',
+          '^xx _ x x x x x x x x x x x x x',
+          '^xx _ x x x x x x x x x x x x x',
+          'x _ x x x x x x x x x x x x x x',
+        },
+      }
+      require('qmk').setup(conf)
+    end,
+  },
+  {
     'Shatur/neovim-session-manager',
     version = '*',
     config = function()
@@ -765,6 +782,7 @@ require('lazy').setup({
           },
         },
         gopls = {},
+        ols = {},
         -- pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
@@ -1062,9 +1080,9 @@ require('lazy').setup({
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
-    config = function(self, opts)
-      require('nvim-treesitter.install').compilers = { 'zig' }
-    end,
+    -- config = function(self, opts)
+    --   require('nvim-treesitter.install').compilers = { 'zig' }
+    -- end,
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
