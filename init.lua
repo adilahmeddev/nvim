@@ -111,6 +111,7 @@ vim.opt.number = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
+vim.o.fileformats = 'unix'
 
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
@@ -214,9 +215,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
-if vim.g.vscode then
-  return
-end
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -241,6 +239,43 @@ vim.opt.rtp:prepend(lazypath)
 --
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
+
+  ---@type LazySpec
+  {
+    'mikavilpas/yazi.nvim',
+    event = 'VeryLazy',
+    keys = {
+      -- 👇 in this section, choose your own keymappings!
+      {
+        '<leader>-',
+        mode = { 'n', 'v' },
+        '<cmd>Yazi<cr>',
+        desc = 'Open yazi at the current file',
+      },
+      {
+        -- Open in the current working directory
+        '<leader>cw',
+        '<cmd>Yazi cwd<cr>',
+        desc = "Open the file manager in nvim's working directory",
+      },
+      {
+        '<c-up>',
+        '<cmd>Yazi toggle<cr>',
+        desc = 'Resume the last yazi session',
+      },
+    },
+    ---@type YaziConfig
+    opts = {
+      -- if you want to open yazi instead of netrw, see below for more info
+      open_for_directories = false,
+      integrations = {
+        resolve_relative_path_application = 'C:/Program Files/Git/usr/bin/realpath.exe',
+      },
+      keymaps = {
+        show_help = '<f1>',
+      },
+    },
+  },
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
 
@@ -270,7 +305,6 @@ require('lazy').setup({
       },
     },
   },
-
   { 'akinsho/bufferline.nvim', version = '*', dependencies = 'nvim-tree/nvim-web-devicons', opts = {} },
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
@@ -763,18 +797,7 @@ require('lazy').setup({
       --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
-      local function check_zig_version()
-        local result = vim.fn.system 'zig version'
-        if vim.api.nvim_get_vvar 'shell_error' ~= 0 then
-          print 'failed to get local zig version, defaulting to zls 0.13.0'
-          return nil
-        else
-          local ver = result:match '(%d+%.%d+%.%d+)'
-          return ver
-        end
-      end
 
-      local zig_version = check_zig_version()
       local servers = {
         clangd = {
           init_options = {
@@ -792,9 +815,7 @@ require('lazy').setup({
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         --
-        zls = {
-          cmd = (zig_version and zig_version ~= '0.13.0') and { 'zls' } or nil,
-        },
+        zls = {},
         lua_ls = {
           -- cmd = {...},
           -- filetypes = { ...},
@@ -1080,9 +1101,6 @@ require('lazy').setup({
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
-    -- config = function(self, opts)
-    --   require('nvim-treesitter.install').compilers = { 'zig' }
-    -- end,
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
