@@ -10,6 +10,11 @@
 --
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
+  {
+    'bezhermoso/tree-sitter-ghostty',
+    build = 'make nvim_install',
+  },
+  { 'mkindberg/ghostty-ls', config = true },
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
 
@@ -55,7 +60,7 @@ require('lazy').setup({
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
