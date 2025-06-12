@@ -27,7 +27,22 @@ require('lazy').setup({
 
   -- modular approach: using `require 'path/name'` will
   -- include a plugin definition from file lua/path/name.lua
-
+  {
+    'bngarren/checkmate.nvim',
+    ft = 'markdown', -- Lazy loads for Markdown files matching patterns in 'files'
+    opts = {
+      -- your configuration here
+      -- or leave empty to use defaults
+    },
+  },
+  {
+    'jakewvincent/mkdnflow.nvim',
+    config = function()
+      require('mkdnflow').setup {
+        -- Config goes here; leave blank for defaults
+      }
+    end,
+  },
   require 'kickstart/plugins/gitsigns',
 
   require 'kickstart/plugins/which-key',
@@ -45,6 +60,7 @@ require('lazy').setup({
   require 'kickstart/plugins/todo-comments',
 
   require 'kickstart/plugins/mini',
+  'ahmedkhalf/project.nvim',
 
   require 'kickstart/plugins/treesitter',
 
