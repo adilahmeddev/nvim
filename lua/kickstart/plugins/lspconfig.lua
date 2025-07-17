@@ -238,8 +238,13 @@ return {
           },
         },
       }
-
-      -- Ensure the servers and tools above are installed
+      vim.lsp.config['kotlin_ls'] = {
+        cmd = { 'kotlin-ls', '--stdio' },
+        single_file_support = true,
+        filetypes = { 'kotlin' },
+        root_markers = { 'build.gradle', 'build.gradle.kts', 'pom.xml' },
+      } -- Ensure the servers and tools above are installed
+      vim.lsp.enable 'kotlin_ls'
       --
       -- To check the current status of installed tools and/or manually install
       -- other tools, you can run
