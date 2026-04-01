@@ -2,7 +2,6 @@
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
-
 -- Make line numbers default
 vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
@@ -13,6 +12,7 @@ vim.opt.relativenumber = true
 vim.o.mouse = 'a'
 vim.o.tabstop = 2
 vim.o.shiftwidth = 2
+vim.o.expandtab = true
 -- Don't show the mode, since it's already in the status line
 vim.o.showmode = false
 
@@ -66,6 +66,12 @@ vim.o.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.o.scrolloff = 10
+
+-- Bordered popup menu for completion
+vim.o.pumborder = 'rounded'
+
+-- Default border style for floating windows
+vim.o.winborder = 'bold'
 
 -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
 -- instead raise a dialog asking if you wish to save the current file(s)

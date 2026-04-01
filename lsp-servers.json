@@ -1,0 +1,21 @@
+{
+  "servers": {
+    "clangd": {},
+    "gopls": {},
+    "vtsls": {},
+    "basedpyright": {},
+    "lua_ls": {
+      "settings": {
+        "Lua": {
+          "completion": {
+            "callSnippet": "Replace"
+          }
+        }
+      }
+    }
+  },
+  "tools": [
+    "stylua"
+  ],
+  "local_only": []
+}
