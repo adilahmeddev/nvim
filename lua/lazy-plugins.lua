@@ -11,10 +11,39 @@
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
   {
+    'Owen-Dechow/videre.nvim',
+    cmd = 'Videre',
+    dependencies = {
+      'Owen-Dechow/graph_view_yaml_parser', -- Optional: add YAML support
+      'Owen-Dechow/graph_view_toml_parser', -- Optional: add TOML support
+      'a-usr/xml2lua.nvim', -- Optional | Experimental: add XML support
+    },
+    opts = {
+      round_units = false,
+      simple_statusline = true, -- If you are just starting out with Videre,
+      --   setting this to `false` will give you
+      --   descriptions of available keymaps.
+    },
+  },
+  {
+    'nickkadutskyi/jb.nvim',
+    lazy = false,
+    priority = 1000,
+    opts = {},
+    config = function()
+      -- require("jb").setup({transparent = true})
+      vim.cmd 'colorscheme jb'
+    end,
+  },
+  {
+    'drewxs/ash.nvim',
+    lazy = false,
+    priority = 1000,
+  },
+  {
     'bezhermoso/tree-sitter-ghostty',
     build = 'make nvim_install',
   },
-  { 'mkindberg/ghostty-ls', config = true },
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
 
@@ -27,6 +56,15 @@ require('lazy').setup({
 
   -- modular approach: using `require 'path/name'` will
   -- include a plugin definition from file lua/path/name.lua
+  {
+    'MeanderingProgrammer/render-markdown.nvim',
+    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.nvim' }, -- if you use the mini.nvim suite
+    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.icons' },        -- if you use standalone mini plugins
+    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+    ---@module 'render-markdown'
+    ---@type render.md.UserConfig
+    opts = {},
+  },
   {
     'bngarren/checkmate.nvim',
     ft = 'markdown', -- Lazy loads for Markdown files matching patterns in 'files'
@@ -89,6 +127,7 @@ require('lazy').setup({
   -- Or use telescope!
   -- In normal mode type `<space>sh` then write `lazy.nvim-plugin`
   -- you can continue same window with `<space>sr` which resumes last telescope search
+  install = { colorscheme = { 'ash' } },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
