@@ -11,10 +11,28 @@ return {
   },
   lazy = false,
   keys = {
-    { '\\', ':Neotree reveal position=float reveal_force_cwd=true<CR>', desc = 'NeoTree reveal', silent = true },
+    {
+      '\\',
+      function()
+        local bufname = vim.api.nvim_buf_get_name(0)
+        local is_real_file = bufname ~= '' and vim.uv.fs_stat(bufname) ~= nil
+        if is_real_file then
+          vim.cmd('Neotree reveal position=float reveal_force_cwd=true')
+        else
+          vim.cmd('Neotree position=float dir=' .. vim.fn.getcwd())
+        end
+      end,
+      desc = 'NeoTree reveal',
+      silent = true,
+    },
   },
   opts = {
     filesystem = {
+      filtered_items = {
+        visible = true,
+        hide_dotfiles = false,
+        hide_gitignored = false,
+      },
       window = {
         mappings = {
           ['\\'] = 'close_window',

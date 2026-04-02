@@ -4,6 +4,7 @@
     "gopls": {},
     "vtsls": {},
     "basedpyright": {},
+    "jsonls": {},
     "lua_ls": {
       "settings": {
         "Lua": {

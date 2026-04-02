@@ -4,6 +4,6 @@
 -- See the kickstart.nvim README for more information
 --
 return {
-  require 'custom.plugins.themes.ashen',
+  require 'custom.plugins.themes.kanagawa',
   -- require 'custom.plugins.n'
 }
