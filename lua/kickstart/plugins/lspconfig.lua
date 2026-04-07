@@ -3,6 +3,28 @@ local lsp_loader = require('lsp-loader')
 local log = lsp_loader.log
 
 local function setup_lsp()
+  -- Apply blink.cmp capabilities before enabling servers so completions work
+  local blink_ok, blink = pcall(require, 'blink.cmp')
+  if blink_ok then
+    vim.lsp.config('*', {
+      capabilities = blink.get_lsp_capabilities(),
+    })
+    log('applied blink.cmp capabilities')
+  else
+    log('WARN: blink.cmp not loaded yet, completions may not work')
+  end
+
+  -- Global callbacks for all LSP clients: log errors and exits
+  vim.lsp.config('*', {
+    on_error = function(code, err)
+      log('ERROR code=' .. tostring(code) .. ': ' .. tostring(err))
+    end,
+    on_exit = function(code, signal, client_id)
+      local msg = 'exit client_id=' .. tostring(client_id) .. ' code=' .. tostring(code) .. ' signal=' .. tostring(signal)
+      log(msg)
+    end,
+  })
+
   local servers = lsp_loader.servers()
   local server_names = {}
   for name, config in pairs(servers) do
@@ -126,6 +148,7 @@ return {
     -- We don't call lspconfig.setup() — Neovim 0.12 reads these from the runtimepath.
     'neovim/nvim-lspconfig',
     lazy = false,
+    dependencies = { 'saghen/blink.cmp' },
     config = function()
       setup_lsp()
     end,
@@ -142,15 +165,6 @@ return {
   {
     'j-hui/fidget.nvim',
     opts = {},
-  },
-  {
-    -- Apply blink.cmp capabilities to all LSP servers
-    'saghen/blink.cmp',
-    config = function()
-      vim.lsp.config('*', {
-        capabilities = require('blink.cmp').get_lsp_capabilities(),
-      })
-    end,
   },
 }
 -- vim: ts=2 sts=2 sw=2 et

@@ -4,6 +4,7 @@
     "gopls": {},
     "vtsls": {},
     "basedpyright": {},
+    "rust_analyzer": {},
     "jsonls": {},
     "lua_ls": {
       "settings": {
@@ -13,10 +14,11 @@
           }
         }
       }
-    }
+    },
+    "moon_lsp": {}
   },
   "tools": [
     "stylua"
   ],
-  "local_only": []
+  "local_only": ["moon_lsp"]
 }

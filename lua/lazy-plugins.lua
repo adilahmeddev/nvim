@@ -11,6 +11,18 @@
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
   {
+    'adilahmeddev/moon.nvim',
+    lazy = false,
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter',
+      'adilahmeddev/tree-sitter-moon',
+    },
+    build = function(plugin)
+      require('moon').build(plugin)
+    end,
+    opts = { lsp = { auto_enable = false } },
+  },
+  {
     'Owen-Dechow/videre.nvim',
     cmd = 'Videre',
     dependencies = {

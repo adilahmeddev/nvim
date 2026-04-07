@@ -138,6 +138,11 @@ end, {
   desc = 'Show LSP clients for current buffer, or "all" for all configured servers',
 })
 
+vim.api.nvim_create_user_command('LspLog', function()
+  local log_path = vim.fn.stdpath 'config' .. '/log_file.txt'
+  vim.cmd.edit(log_path)
+end, { desc = 'Open LSP log file' })
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
