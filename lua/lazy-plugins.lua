@@ -11,6 +11,7 @@
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
   'nvim-tree/nvim-web-devicons',
+  'slint-ui/vim-slint',
   {
     'adilahmeddev/moon.nvim',
     lazy = false,
@@ -78,22 +79,22 @@ require('lazy').setup({
     ---@type render.md.UserConfig
     opts = {},
   },
-  {
-    'bngarren/checkmate.nvim',
-    ft = 'markdown', -- Lazy loads for Markdown files matching patterns in 'files'
-    opts = {
-      -- your configuration here
-      -- or leave empty to use defaults
-    },
-  },
-  {
-    'jakewvincent/mkdnflow.nvim',
-    config = function()
-      require('mkdnflow').setup {
-        -- Config goes here; leave blank for defaults
-      }
-    end,
-  },
+  -- {
+  --   'bngarren/checkmate.nvim',
+  --   ft = 'markdown', -- Lazy loads for Markdown files matching patterns in 'files'
+  --   opts = {
+  --     -- your configuration here
+  --     -- or leave empty to use defaults
+  --   },
+  -- },
+  -- {
+  --   'jakewvincent/mkdnflow.nvim',
+  --   config = function()
+  --     require('mkdnflow').setup {
+  --       -- Config goes here; leave blank for defaults
+  --     }
+  --   end,
+  -- },
   require 'kickstart/plugins/gitsigns',
 
   require 'kickstart/plugins/which-key',

@@ -1,11 +1,8 @@
 {
   "servers": {
     "clangd": {},
-    "just": {},
     "gopls": {},
     "kotlin_lsp": {},
-    "vtsls": {},
-    "basedpyright": {},
     "jsonls": {},
     "lua_ls": {
       "settings": {
@@ -16,12 +13,24 @@
         }
       }
     },
+    "slint_lsp": {},
+    "just": {},
+    "vtsls": {},
+    "basedpyright": {},
+    "rust_analyzer": {},
+    "powershell_es": {
+      "bundle_path": "c:\\PowerShellEditorServices",
+      "init_options": {
+        "enableProfileLoading": false
+      }
+    },
     "moon_lsp": {}
   },
   "tools": [
     "stylua"
   ],
   "local_only": [
-    "moon_lsp"
+    "moon_lsp",
+    "slint_lsp"
   ]
 }
