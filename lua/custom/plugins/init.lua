@@ -4,6 +4,13 @@
 -- See the kickstart.nvim README for more information
 --
 return {
-  require 'custom.plugins.themes.kanagawa',
+  {
+    'norcalli/nvim-colorizer.lua',
+    config = function()
+      require('colorizer').setup()
+    end,
+  },
+  -- require 'custom.plugins.themes.kanagawa',
+  require 'custom.plugins.rustaceanvim',
   -- require 'custom.plugins.n'
 }

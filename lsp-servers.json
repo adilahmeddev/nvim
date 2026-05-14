@@ -1,10 +1,11 @@
 {
   "servers": {
     "clangd": {},
+    "just": {},
     "gopls": {},
+    "kotlin_lsp": {},
     "vtsls": {},
     "basedpyright": {},
-    "rust_analyzer": {},
     "jsonls": {},
     "lua_ls": {
       "settings": {
@@ -20,5 +21,7 @@
   "tools": [
     "stylua"
   ],
-  "local_only": ["moon_lsp"]
+  "local_only": [
+    "moon_lsp"
+  ]
 }

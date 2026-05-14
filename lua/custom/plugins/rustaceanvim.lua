@@ -25,6 +25,14 @@ return {
           end,
         },
       }
+
+      vim.lsp.config('rust-analyzer', {
+        settings = {
+          ['rust-analyzer'] = {
+            cargo = { features = 'all' },
+          },
+        },
+      })
     end,
   },
 }
