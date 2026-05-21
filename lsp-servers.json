@@ -14,7 +14,9 @@
         }
       }
     },
-    "slint_lsp": {},
+    "slint_lsp": {
+      "local": true
+    },
     "just": {},
     "vtsls": {},
     "basedpyright": {},
@@ -24,13 +26,20 @@
         "enableProfileLoading": false
       }
     },
-    "moon_lsp": {}
+    "moon_lsp": {
+      "local": true
+    },
+    "sourcekit": {
+      "local": true,
+      "cmd": [
+        "sourcekit-lsp"
+      ],
+      "filetypes": [
+        "swift"
+      ]
+    }
   },
   "tools": [
     "stylua"
-  ],
-  "local_only": [
-    "moon_lsp",
-    "slint_lsp"
   ]
 }

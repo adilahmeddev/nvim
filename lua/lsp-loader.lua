@@ -1,9 +1,10 @@
 -- Reads lsp-servers.json and returns server configs + mason install list.
 --
 -- JSON schema:
---   servers    - map of server_name -> config (passed to vim.lsp.config)
---   tools      - list of non-LSP tools for mason to install (formatters, linters)
---   local_only - list of server names to skip mason install (use system binary)
+--   servers - map of server_name -> config (passed to vim.lsp.config).
+--             Set `local = true` on a server to skip mason install and use the
+--             system binary instead.
+--   tools   - list of non-LSP tools for mason to install (formatters, linters)
 
 local M = {}
 
@@ -46,7 +47,7 @@ local function get_config()
   if cached_config then
     return cached_config
   end
-  cached_config = read_json() or { servers = {}, tools = {}, local_only = {} }
+  cached_config = read_json() or { servers = {}, tools = {} }
   return cached_config
 end
 
@@ -85,14 +86,20 @@ function M.servers()
     if lsp_name ~= name then
       log('normalized mason name ' .. name .. ' -> ' .. lsp_name)
     end
-    normalized[lsp_name] = config
+    local clean = {}
+    for k, v in pairs(config) do
+      if k ~= 'local' then
+        clean[k] = v
+      end
+    end
+    normalized[lsp_name] = clean
   end
   return normalized
 end
 
 -- Must be called after mason.nvim has been set up (registry sources loaded).
 -- Server keys may be either lspconfig names or mason package names; both are
--- handled. local_only entries match against either form.
+-- handled. Servers with `local = true` skip mason install.
 function M.mason_ensure_installed()
   local config = get_config()
   local servers = config.servers or {}
@@ -101,21 +108,10 @@ function M.mason_ensure_installed()
   local lsp_to_mason = mappings.lsp_to_mason
   local mason_to_lsp = mappings.mason_to_lsp
 
-  local local_only = {}
-  for _, name in ipairs(config.local_only or {}) do
-    local_only[name] = true
-    -- Also index by the alternate form so either name matches.
-    if lsp_to_mason[name] then
-      local_only[lsp_to_mason[name]] = true
-    elseif mason_to_lsp[name] then
-      local_only[mason_to_lsp[name]] = true
-    end
-  end
-
   local result = {}
-  for name, _ in pairs(servers) do
-    if local_only[name] then
-      log(name .. ' (local_only, skipping mason)')
+  for name, server_config in pairs(servers) do
+    if server_config['local'] then
+      log(name .. ' (local, skipping mason)')
     elseif mason_to_lsp[name] then
       log(name .. ' (mason name, using as-is)')
       table.insert(result, name)
