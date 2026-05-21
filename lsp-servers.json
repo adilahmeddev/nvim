@@ -3,6 +3,7 @@
     "clangd": {},
     "gopls": {},
     "kotlin_lsp": {},
+    "tombi": {},
     "jsonls": {},
     "lua_ls": {
       "settings": {
@@ -17,7 +18,6 @@
     "just": {},
     "vtsls": {},
     "basedpyright": {},
-    "rust_analyzer": {},
     "powershell_es": {
       "bundle_path": "c:\\PowerShellEditorServices",
       "init_options": {
