@@ -1,16 +1,16 @@
 return {
   { -- Parser installation (highlight/indent are built-in in 0.12)
     'nvim-treesitter/nvim-treesitter',
+    branch = 'main',
     lazy = false,
-    init = function()
+    build = ':TSUpdate',
+    config = function()
       vim.api.nvim_create_autocmd('FileType', {
-        pattern = require('nvim-treesitter').get_installed(),
-        callback = function()
-          vim.treesitter.start()
+        callback = function(args)
+          pcall(vim.treesitter.start, args.buf)
         end,
       })
     end,
-    build = ':TSUpdate',
     -- Incremental selection is built-in in 0.12:
     --   In visual mode: `an` to expand, `in` to shrink, `]n`/`[n` for siblings
   },

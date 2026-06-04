@@ -13,11 +13,10 @@ require('lazy').setup({
   'nvim-tree/nvim-web-devicons',
   'slint-ui/vim-slint',
   {
-    'adilahmeddev/moon.nvim',
+    'adilahmeddev/moon',
     lazy = false,
     dependencies = {
       'nvim-treesitter/nvim-treesitter',
-      'adilahmeddev/tree-sitter-moon',
     },
     build = function(plugin)
       require('moon').build(plugin)
