@@ -50,30 +50,33 @@ vim.api.nvim_create_user_command('LspInfo', function(opts)
   local entries = {}
 
   if opts.args == 'all' then
-    local lsp_loader = require('lsp-loader')
-    local servers = lsp_loader.servers()
     local active_clients = vim.lsp.get_clients()
     local active_names = {}
     for _, c in ipairs(active_clients) do
       active_names[c.name] = c
     end
-    for name, config in pairs(servers) do
-      local enabled = vim.lsp.is_enabled(name)
-      local client = active_names[name]
-      local status = client and 'active' or (enabled and 'enabled' or 'disabled')
-      table.insert(entries, {
-        name = name,
-        status = status,
-        info = {
-          enabled = enabled,
-          active = client ~= nil,
-          id = client and client.id or nil,
-          root_dir = client and client.root_dir or nil,
-          cmd = (client and client.config.cmd) or config.cmd,
-          filetypes = (client and client.config.filetypes) or config.filetypes,
-          settings = (client and client.config.settings) or config.settings,
-        },
-      })
+    for _, config in ipairs(vim.lsp.get_configs()) do
+      local name = config.name
+      if name then
+        local enabled = vim.lsp.is_enabled(name)
+        local client = active_names[name]
+        if enabled or client then
+          local status = client and 'active' or 'enabled'
+          table.insert(entries, {
+            name = name,
+            status = status,
+            info = {
+              enabled = enabled,
+              active = client ~= nil,
+              id = client and client.id or nil,
+              root_dir = client and client.root_dir or nil,
+              cmd = (client and client.config.cmd) or config.cmd,
+              filetypes = (client and client.config.filetypes) or config.filetypes,
+              settings = (client and client.config.settings) or config.settings,
+            },
+          })
+        end
+      end
     end
   else
     local clients = vim.lsp.get_clients { bufnr = 0 }
@@ -108,7 +111,7 @@ vim.api.nvim_create_user_command('LspInfo', function(opts)
 
   pickers
     .new({}, {
-      prompt_title = opts.args == 'all' and 'LSP Servers (all)' or 'LSP Clients (buffer)',
+      prompt_title = opts.args == 'all' and 'LSP Servers (enabled)' or 'LSP Clients (buffer)',
       finder = finders.new_table {
         results = entries,
         entry_maker = function(entry)
@@ -135,7 +138,7 @@ end, {
   complete = function()
     return { 'all' }
   end,
-  desc = 'Show LSP clients for current buffer, or "all" for all configured servers',
+  desc = 'Show LSP clients for current buffer, or "all" for enabled servers',
 })
 
 vim.api.nvim_create_user_command('LspLog', function()

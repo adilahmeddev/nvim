@@ -107,6 +107,28 @@ require 'lazy-bootstrap'
 require 'lazy-plugins'
 
 require 'custom.plugins.init'
+local function dump_keymaps(path)
+  path = path or vim.fn.expand '~/nvim-keymaps.txt'
+  local modes = { 'n', 'i', 'v', 'x', 's', 'o', 'c', 't', 'l' }
+  local lines = {}
+  for _, mode in ipairs(modes) do
+    local maps = vim.api.nvim_get_keymap(mode)
+    if #maps > 0 then
+      table.insert(lines, ('==== mode: %s ===='):format(mode))
+      for _, m in ipairs(maps) do
+        local rhs = m.rhs or (m.callback and '<Lua callback>') or ''
+        local desc = m.desc and ('  -- ' .. m.desc) or ''
+        table.insert(lines, ('  %-22s -> %s%s'):format(m.lhs, rhs, desc))
+      end
+      table.insert(lines, '')
+    end
+  end
+  vim.fn.writefile(lines, path)
+  vim.notify('Keymaps written to ' .. path)
+end
 
+vim.api.nvim_create_user_command('DumpKeymaps', function(opts)
+  dump_keymaps(opts.args ~= '' and opts.args or nil)
+end, { nargs = '?', complete = 'file' })
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et

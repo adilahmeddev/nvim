@@ -1,8 +1,54 @@
--- LSP Plugins
-local lsp_loader = require('lsp-loader')
-local log = lsp_loader.log
+local mason_lsp_servers = {
+  'clangd',
+  'gopls',
+  'vtsls',
+  'basedpyright',
+  'rust_analyzer',
+  'jsonls',
+  'lua_ls',
+}
+
+local local_lsp_servers = {
+  'moon_lsp',
+}
+
+local lsp_server_configs = {
+  lua_ls = {
+    settings = {
+      Lua = {
+        completion = {
+          callSnippet = 'Replace',
+        },
+      },
+    },
+  },
+}
+
+local mason_tools = {
+  'stylua',
+}
+
+local log_path = vim.fn.stdpath 'config' .. '/log_file.txt'
+
+local function reset_lsp_log()
+  local file = io.open(log_path, 'w')
+  if file then
+    file:write('[lsp] startup ' .. os.date '%Y-%m-%d %H:%M:%S' .. '\n')
+    file:close()
+  end
+end
+
+local function log(msg)
+  local file = io.open(log_path, 'a')
+  if file then
+    file:write('[lsp] ' .. msg .. '\n')
+    file:close()
+  end
+end
 
 local function setup_lsp()
+  reset_lsp_log()
+
   -- Apply blink.cmp capabilities before enabling servers so completions work
   local blink_ok, blink = pcall(require, 'blink.cmp')
   if blink_ok then
@@ -25,20 +71,19 @@ local function setup_lsp()
     end,
   })
 
-  local servers = lsp_loader.servers()
-  local server_names = {}
-  for name, config in pairs(servers) do
-    vim.lsp.config(name, config)
+  for _, name in ipairs(vim.list_extend(vim.deepcopy(mason_lsp_servers), local_lsp_servers)) do
+    vim.lsp.config(name, lsp_server_configs[name] or {})
     log('configured ' .. name)
-    table.insert(server_names, name)
   end
-  vim.lsp.enable(server_names)
-  log('enabled: ' .. table.concat(server_names, ', '))
+
+  vim.lsp.enable(local_lsp_servers)
+  log('mason-lspconfig will enable: ' .. table.concat(mason_lsp_servers, ', '))
+  log('enabled local-only: ' .. table.concat(local_lsp_servers, ', '))
 end
 
 -- Log LSP detach events
 vim.api.nvim_create_autocmd('LspDetach', {
-  group = vim.api.nvim_create_augroup('lsp-loader-detach-log', { clear = true }),
+  group = vim.api.nvim_create_augroup('kickstart-lsp-detach-log', { clear = true }),
   callback = function(event)
     local client = vim.lsp.get_client_by_id(event.data.client_id)
     if client then
@@ -125,8 +170,7 @@ vim.diagnostic.config {
   },
 }
 
--- Return only plugin specs (mason, fidget, lazydev)
--- blink.cmp capabilities are applied once blink loads via its own config
+-- LSP plugin specs
 return {
   {
     'folke/lazydev.nvim',
@@ -138,7 +182,7 @@ return {
     },
   },
   {
-    'williamboman/mason.nvim',
+    'mason-org/mason.nvim',
     opts = {
       registries = { 'github:mason-org/mason-registry' },
     },
@@ -148,19 +192,29 @@ return {
     -- We don't call lspconfig.setup() — Neovim 0.12 reads these from the runtimepath.
     'neovim/nvim-lspconfig',
     lazy = false,
-    dependencies = { 'saghen/blink.cmp' },
-    config = function()
+  },
+  {
+    'mason-org/mason-lspconfig.nvim',
+    dependencies = {
+      'mason-org/mason.nvim',
+      'neovim/nvim-lspconfig',
+      'saghen/blink.cmp',
+    },
+    opts = {
+      ensure_installed = mason_lsp_servers,
+      automatic_enable = mason_lsp_servers,
+    },
+    config = function(_, opts)
       setup_lsp()
+      require('mason-lspconfig').setup(opts)
     end,
   },
   {
     'WhoIsSethDaniel/mason-tool-installer.nvim',
-    dependencies = { 'williamboman/mason.nvim' },
-    config = function()
-      require('mason-tool-installer').setup {
-        ensure_installed = lsp_loader.mason_ensure_installed(),
-      }
-    end,
+    dependencies = { 'mason-org/mason.nvim' },
+    opts = {
+      ensure_installed = mason_tools,
+    },
   },
   {
     'j-hui/fidget.nvim',
