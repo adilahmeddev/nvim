@@ -13,17 +13,6 @@ require('lazy').setup({
   'nvim-tree/nvim-web-devicons',
   'slint-ui/vim-slint',
   {
-    'adilahmeddev/moon',
-    lazy = false,
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter',
-    },
-    build = function(plugin)
-      require('moon').build(plugin)
-    end,
-    opts = { lsp = { auto_enable = false } },
-  },
-  {
     'Owen-Dechow/videre.nvim',
     cmd = 'Videre',
     dependencies = {
