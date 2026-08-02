@@ -8,7 +8,7 @@ vim.filetype.add({ extension = { moon = "moon" } })
 -- Resolve the language server command: prefer a 'moon' on PATH, else the
 -- absolute path to the binary this machine built.
 local moon_cmd = (vim.fn.executable("moon") == 1) and "moon"
-  or [[C:\Users\adil\dev\moon-zig\zig-out\bin\moon.exe]]
+  or [[C:\Users\adil\.local\bin\moon.exe]]
 
 -- 2. LSP --------------------------------------------------------------------
 -- Native client (Neovim 0.11+). Falls back to nvim-lspconfig on older versions.

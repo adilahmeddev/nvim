@@ -121,6 +121,11 @@
 (interface_definition name: (identifier) @type.definition)
 (type_alias name: (identifier) @type.definition)
 
+; Loop labels form their own control-flow namespace.
+(loop_label name: (identifier) @label)
+(break_statement label: (identifier) @label)
+(continue_statement label: (identifier) @label)
+
 ; Constructors: enum variants (definition, value, and pattern positions),
 ; struct-literal heads, and `err.Variant`.
 (variant name: (identifier) @constructor)
@@ -130,8 +135,8 @@
 
 ; -- modules / namespaces ---------------------------------------------------
 ; Qualifier segments of a path get the module color (lowercase only, so a
-; PascalCase `Color::Red` head still reads as a type). The call rules below run
-; afterwards, so the final segment of `std::mem::swap(...)` still reads as a call.
+; PascalCase `Color.Red` head still reads as a type). The call rules below run
+; afterwards, so the final segment of `std.mem.swap(...)` still reads as a call.
 ((use_path (identifier) @module)
   (#match? @module "^[a-z_]"))
 ((path_expression (identifier) @module)
@@ -161,7 +166,7 @@
 (impl_method name: (identifier) @function.method)
 
 ; Call targets. The path form's `.` anchor picks the final segment, overriding
-; the @module rule above for `pkg::fn(...)`.
+; the @module rule above for `pkg.fn(...)`.
 (call_expression
   function: (identifier) @function.call)
 (call_expression
@@ -196,7 +201,7 @@
   "}"
 ] @punctuation.bracket
 
-(turbofish "::<" @punctuation.bracket)
+(turbofish ".<" @punctuation.bracket)
 (type_arguments "<" @punctuation.bracket ">" @punctuation.bracket)
 (type_parameters "<" @punctuation.bracket ">" @punctuation.bracket)
 
@@ -204,7 +209,6 @@
   ","
   ":"
   ";"
-  "::"
   "."
   "->"
   "=>"

@@ -10,6 +10,9 @@
 (closure_expression) @local.scope
 (block) @local.scope
 (for_statement) @local.scope
+(array_comprehension) @local.scope
+(dict_comprehension) @local.scope
+(generator_expression) @local.scope
 (while_statement) @local.scope
 (if_expression) @local.scope
 (match_expression) @local.scope
@@ -29,10 +32,9 @@
 (let_statement
   pattern: (struct_pattern (field_pattern name: (identifier) @local.definition.var)))
 
-; `for` loop variable.
-(for_statement name: (identifier) @local.definition.var)
-
 ; Pattern bindings introduced inside a `match` arm.
+; The same nodes also cover every `for` head now that loops accept the full
+; irrefutable-pattern grammar.
 (binding_pattern (identifier) @local.definition.var)
 (binding_subpattern name: (identifier) @local.definition.var)
 
@@ -42,6 +44,11 @@
 (struct_definition name: (identifier) @local.definition.type)
 (enum_definition name: (identifier) @local.definition.type)
 (type_alias name: (identifier) @local.definition.type)
+
+; Control-flow labels are distinct from value bindings in Moon-aware clients.
+(loop_label name: (identifier) @local.definition.label)
+(break_statement label: (identifier) @local.reference)
+(continue_statement label: (identifier) @local.reference)
 
 ; -- references -------------------------------------------------------------
 (identifier) @local.reference
