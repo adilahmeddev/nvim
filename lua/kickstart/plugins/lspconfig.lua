@@ -75,7 +75,7 @@ local function setup_lsp()
   end
 
   vim.lsp.enable(local_lsp_servers)
-  log('mason-lspconfig will enable: ' .. table.concat(mason_lsp_servers, ', '))
+  log 'mason-lspconfig will enable all Mason-installed LSP servers'
   log('enabled local-only: ' .. table.concat(local_lsp_servers, ', '))
 end
 
@@ -200,7 +200,9 @@ return {
     },
     opts = {
       ensure_installed = mason_lsp_servers,
-      automatic_enable = mason_lsp_servers,
+      -- Keep installation and activation separate: ensure the core servers are
+      -- installed, but also activate LSPs installed manually through :Mason.
+      automatic_enable = true,
     },
     config = function(_, opts)
       setup_lsp()
