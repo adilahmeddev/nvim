@@ -1,10 +1,11 @@
-local mason_lsp_servers = {
+local required_lsp_servers = {
   'clangd',
   'gopls',
   'vtsls',
   'basedpyright',
   'jsonls',
   'lua_ls',
+  'tombi',
   'zls',
 }
 
@@ -22,9 +23,19 @@ local lsp_server_configs = {
   },
 }
 
-local mason_tools = {
+local required_mason_tools = {
   'stylua',
 }
+
+local function extend_unique(target, additions)
+  target = target or {}
+  for _, value in ipairs(additions) do
+    if not vim.tbl_contains(target, value) then
+      table.insert(target, value)
+    end
+  end
+  return target
+end
 
 local log_path = vim.fn.stdpath 'config' .. '/log_file.txt'
 
@@ -69,7 +80,7 @@ local function setup_lsp()
     end,
   })
 
-  for _, name in ipairs(vim.list_extend(vim.deepcopy(mason_lsp_servers), local_lsp_servers)) do
+  for _, name in ipairs(vim.list_extend(vim.deepcopy(required_lsp_servers), local_lsp_servers)) do
     vim.lsp.config(name, lsp_server_configs[name] or {})
     log('configured ' .. name)
   end
@@ -181,9 +192,7 @@ return {
   },
   {
     'mason-org/mason.nvim',
-    opts = {
-      registries = { 'github:mason-org/mason-registry' },
-    },
+    opts = {},
   },
   {
     -- Provides default cmd/filetypes/root_markers for LSP servers via lsp/*.lua files.
@@ -198,12 +207,11 @@ return {
       'neovim/nvim-lspconfig',
       'saghen/blink.cmp',
     },
-    opts = {
-      ensure_installed = mason_lsp_servers,
-      -- Keep installation and activation separate: ensure the core servers are
-      -- installed, but also activate LSPs installed manually through :Mason.
-      automatic_enable = true,
-    },
+    opts = function(_, opts)
+      opts.ensure_installed = extend_unique(opts.ensure_installed, required_lsp_servers)
+      return opts
+    end,
+    opts_extend = { 'ensure_installed' },
     config = function(_, opts)
       setup_lsp()
       require('mason-lspconfig').setup(opts)
@@ -212,9 +220,11 @@ return {
   {
     'WhoIsSethDaniel/mason-tool-installer.nvim',
     dependencies = { 'mason-org/mason.nvim' },
-    opts = {
-      ensure_installed = mason_tools,
-    },
+    opts = function(_, opts)
+      opts.ensure_installed = extend_unique(opts.ensure_installed, required_mason_tools)
+      return opts
+    end,
+    opts_extend = { 'ensure_installed' },
   },
   {
     'j-hui/fidget.nvim',
