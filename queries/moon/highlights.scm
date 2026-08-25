@@ -201,7 +201,7 @@
   "}"
 ] @punctuation.bracket
 
-(turbofish ".<" @punctuation.bracket)
+(turbofish "<" @punctuation.bracket ">" @punctuation.bracket)
 (type_arguments "<" @punctuation.bracket ">" @punctuation.bracket)
 (type_parameters "<" @punctuation.bracket ">" @punctuation.bracket)
 
@@ -215,6 +215,12 @@
 ] @punctuation.delimiter
 
 ; -- operators --------------------------------------------------------------
+; Keep pointer syntax explicit as well as covered by the generic operator list:
+; this pins all three contexts when editors consume only named-node patterns.
+(address_of_expression "&" @operator)
+(dereference_expression "*" @operator)
+(pointer_type "*" @operator)
+
 [
   "+"
   "-"

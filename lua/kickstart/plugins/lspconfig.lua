@@ -3,14 +3,12 @@ local mason_lsp_servers = {
   'gopls',
   'vtsls',
   'basedpyright',
-  'rust_analyzer',
   'jsonls',
   'lua_ls',
+  'zls',
 }
 
-local local_lsp_servers = {
-  'moon_lsp',
-}
+local local_lsp_servers = {}
 
 local lsp_server_configs = {
   lua_ls = {
@@ -55,9 +53,9 @@ local function setup_lsp()
     vim.lsp.config('*', {
       capabilities = blink.get_lsp_capabilities(),
     })
-    log('applied blink.cmp capabilities')
+    log 'applied blink.cmp capabilities'
   else
-    log('WARN: blink.cmp not loaded yet, completions may not work')
+    log 'WARN: blink.cmp not loaded yet, completions may not work'
   end
 
   -- Global callbacks for all LSP clients: log errors and exits
@@ -145,7 +143,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end
 
     -- Linked editing ranges (e.g., edit HTML opening+closing tags together)
-    if client and client:supports_method('textDocument/linkedEditingRange') then
+    if client and client:supports_method 'textDocument/linkedEditingRange' then
       vim.lsp.linked_editing_range.enable(true, { client_id = client.id })
     end
   end,
