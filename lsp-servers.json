@@ -3,7 +3,6 @@
     "clangd": {},
     "gopls": {},
     "kotlin_lsp": {},
-    "tombi": {},
     "jsonls": {},
     "lua_ls": {
       "settings": {

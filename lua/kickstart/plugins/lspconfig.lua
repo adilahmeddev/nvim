@@ -5,7 +5,6 @@ local required_lsp_servers = {
   'basedpyright',
   'jsonls',
   'lua_ls',
-  'tombi',
   'zls',
 }
 
